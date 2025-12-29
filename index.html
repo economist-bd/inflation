@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="bn" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>মুদ্রাস্পীতি সিমুলেশন</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&display=swap');
+        
+        * {
+            font-family: 'Noto Sans Bengali', sans-serif;
+        }
+        
+        .slider-container {
+            position: relative;
+            padding: 1rem 0;
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            outline: none;
+            transition: opacity 0.2s;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+        }
+        
+        .chart-bar {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .info-card {
+            transition: all 0.3s ease;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full w-full overflow-auto">
+  <div class="w-full h-full min-h-full" id="app-container"><!-- Header -->
+   <div class="text-center py-8 px-4" id="header-section">
+    <h1 class="mb-2 font-bold" id="main-title">মুদ্রাস্পীতি সিমুলেশন</h1>
+    <p class="opacity-90" id="subtitle">HSC অর্থনীতি - ইন্টারঅ্যাক্টিভ শিক্ষা</p>
+   </div><!-- Main Content -->
+   <div class="max-w-7xl mx-auto px-4 pb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><!-- Control Panel -->
+     <div class="rounded-2xl shadow-lg p-6" id="control-panel">
+      <h2 class="font-bold mb-6">নিয়ন্ত্রণ প্যানেল</h2><!-- Money Supply Slider -->
+      <div class="slider-container mb-6">
+       <div class="flex justify-between items-center mb-2"><label class="font-semibold" id="money-supply-label">অর্থ সরবরাহ</label> <span class="font-bold px-3 py-1 rounded-lg" id="money-value">100%</span>
+       </div><input type="range" min="50" max="200" value="100" class="slider" id="money-slider">
+       <div class="flex justify-between mt-1 opacity-70"><span>কম</span> <span>বেশি</span>
+       </div>
+      </div><!-- Demand Slider -->
+      <div class="slider-container mb-6">
+       <div class="flex justify-between items-center mb-2"><label class="font-semibold" id="demand-label">মোট চাহিদা</label> <span class="font-bold px-3 py-1 rounded-lg" id="demand-value">100%</span>
+       </div><input type="range" min="50" max="200" value="100" class="slider" id="demand-slider">
+       <div class="flex justify-between mt-1 opacity-70"><span>কম</span> <span>বেশি</span>
+       </div>
+      </div><!-- Production Slider -->
+      <div class="slider-container mb-6">
+       <div class="flex justify-between items-center mb-2"><label class="font-semibold" id="production-label">উৎপাদন ক্ষমতা</label> <span class="font-bold px-3 py-1 rounded-lg" id="production-value">100%</span>
+       </div><input type="range" min="50" max="150" value="100" class="slider" id="production-slider">
+       <div class="flex justify-between mt-1 opacity-70"><span>কম</span> <span>বেশি</span>
+       </div>
+      </div><!-- Reset Button --> <button id="reset-btn" class="w-full py-3 rounded-xl font-semibold transition-all duration-200 shadow-md"> রিসেট করুন </button>
+     </div><!-- Results Panel -->
+     <div class="space-y-6"><!-- Inflation Rate Card -->
+      <div class="info-card rounded-2xl shadow-lg p-6" id="inflation-card">
+       <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold" id="inflation-rate-label">মুদ্রাস্পীতির হার</h3><span class="text-4xl">📈</span>
+       </div>
+       <div class="font-bold mb-2" id="inflation-rate">
+        0.0%
+       </div>
+       <div class="h-3 rounded-full overflow-hidden">
+        <div class="h-full transition-all duration-500 rounded-full" id="inflation-bar" style="width: 0%"></div>
+       </div>
+       <p class="mt-3 opacity-80" id="inflation-status">স্বাভাবিক অবস্থা</p>
+      </div><!-- Price Level Card -->
+      <div class="info-card rounded-2xl shadow-lg p-6" id="price-card">
+       <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold" id="price-level-label">মূল্য স্তর</h3><span class="text-4xl">💰</span>
+       </div>
+       <div class="font-bold mb-2" id="price-level">
+        100
+       </div>
+       <div class="h-3 rounded-full overflow-hidden">
+        <div class="h-full transition-all duration-500 rounded-full" id="price-bar" style="width: 50%"></div>
+       </div>
+       <p class="mt-3 opacity-80" id="price-status">বেসলাইন মূল্য</p>
+      </div><!-- Purchasing Power Card -->
+      <div class="info-card rounded-2xl shadow-lg p-6" id="purchasing-card">
+       <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold" id="purchasing-power-label">ক্রয়ক্ষমতা</h3><span class="text-4xl">🛒</span>
+       </div>
+       <div class="font-bold mb-2" id="purchasing-power">
+        100%
+       </div>
+       <div class="h-3 rounded-full overflow-hidden">
+        <div class="h-full transition-all duration-500 rounded-full" id="purchasing-bar" style="width: 100%"></div>
+       </div>
+       <p class="mt-3 opacity-80" id="purchasing-status">স্বাভাবিক ক্রয়ক্ষমতা</p>
+      </div>
+     </div>
+    </div><!-- Educational Content -->
+    <div class="mt-8 rounded-2xl shadow-lg p-6" id="education-section">
+     <h2 class="font-bold mb-4">মুদ্রাস্পীতি সম্পর্কে জানুন</h2>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="p-4 rounded-xl" id="concept-1">
+       <div class="text-3xl mb-2">
+        💵
+       </div>
+       <h4 class="font-semibold mb-2">চাহিদাজনিত মুদ্রাস্পীতি</h4>
+       <p class="opacity-80">যখন মোট চাহিদা উৎপাদন ক্ষমতার চেয়ে বেশি হয়, তখন দাম বৃদ্ধি পায়।</p>
+      </div>
+      <div class="p-4 rounded-xl" id="concept-2">
+       <div class="text-3xl mb-2">
+        🏭
+       </div>
+       <h4 class="font-semibold mb-2">ব্যয়জনিত মুদ্রাস্পীতি</h4>
+       <p class="opacity-80">উৎপাদন খরচ বৃদ্ধি পেলে পণ্যের দাম বাড়ে এবং মুদ্রাস্পীতি হয়।</p>
+      </div>
+      <div class="p-4 rounded-xl" id="concept-3">
+       <div class="text-3xl mb-2">
+        🔄
+       </div>
+       <h4 class="font-semibold mb-2">অর্থ সরবরাহ</h4>
+       <p class="opacity-80">অতিরিক্ত অর্থ সরবরাহ বাজারে টাকার মূল্য কমায় এবং দাম বাড়ায়।</p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+        const defaultConfig = {
+            background_color: "#f0f4f8",
+            surface_color: "#ffffff",
+            text_color: "#1e293b",
+            primary_action_color: "#3b82f6",
+            secondary_action_color: "#10b981",
+            main_title: "মুদ্রাস্পীতি সিমুলেশন",
+            subtitle: "HSC অর্থনীতি - ইন্টারঅ্যাক্টিভ শিক্ষা",
+            money_supply_label: "অর্থ সরবরাহ",
+            demand_label: "মোট চাহিদা",
+            production_label: "উৎপাদন ক্ষমতা",
+            inflation_rate_label: "মুদ্রাস্পীতির হার",
+            price_level_label: "মূল্য স্তর",
+            purchasing_power_label: "ক্রয়ক্ষমতা",
+            font_family: "Noto Sans Bengali",
+            font_size: 16
+        };
+
+        let moneySupply = 100;
+        let demand = 100;
+        let production = 100;
+
+        function calculateInflation() {
+            const supplyDemandGap = (demand - production) / production;
+            const moneyEffect = (moneySupply - 100) / 100;
+            const inflationRate = (supplyDemandGap * 50) + (moneyEffect * 30);
+            return Math.max(-10, Math.min(50, inflationRate));
+        }
+
+        function calculatePriceLevel() {
+            const inflation = calculateInflation();
+            return Math.round(100 + inflation * 2);
+        }
+
+        function calculatePurchasingPower() {
+            const priceLevel = calculatePriceLevel();
+            return Math.round((100 / priceLevel) * 100);
+        }
+
+        function getInflationStatus(rate) {
+            if (rate < 0) return "মূল্যহ্রাস (ডিফ্লেশন)";
+            if (rate < 2) return "স্বাভাবিক অবস্থা";
+            if (rate < 5) return "মৃদু মুদ্রাস্পীতি";
+            if (rate < 10) return "মাঝারি মুদ্রাস্পীতি";
+            if (rate < 20) return "উচ্চ মুদ্রাস্পীতি";
+            return "অতি মুদ্রাস্পীতি";
+        }
+
+        function getPriceStatus(level) {
+            if (level < 90) return "মূল্য হ্রাস";
+            if (level < 110) return "বেসলাইন মূল্য";
+            if (level < 130) return "মূল্য বৃদ্ধি";
+            return "উচ্চ মূল্য";
+        }
+
+        function getPurchasingStatus(power) {
+            if (power > 90) return "স্বাভাবিক ক্রয়ক্ষমতা";
+            if (power > 70) return "হ্রাসকৃত ক্রয়ক্ষমতা";
+            if (power > 50) return "নিম্ন ক্রয়ক্ষমতা";
+            return "অতি নিম্ন ক্রয়ক্ষমতা";
+        }
+
+        function getInflationColor(rate) {
+            if (rate < 0) return "#3b82f6";
+            if (rate < 2) return "#10b981";
+            if (rate < 5) return "#f59e0b";
+            if (rate < 10) return "#f97316";
+            return "#ef4444";
+        }
+
+        function updateSimulation() {
+            const inflation = calculateInflation();
+            const priceLevel = calculatePriceLevel();
+            const purchasingPower = calculatePurchasingPower();
+
+            document.getElementById('inflation-rate').textContent = inflation.toFixed(1) + '%';
+            document.getElementById('inflation-status').textContent = getInflationStatus(inflation);
+            document.getElementById('inflation-bar').style.width = Math.min(100, Math.abs(inflation) * 2) + '%';
+            
+            const inflationColor = getInflationColor(inflation);
+            document.getElementById('inflation-bar').style.backgroundColor = inflationColor;
+            document.getElementById('inflation-card').style.borderLeft = `6px solid ${inflationColor}`;
+
+            document.getElementById('price-level').textContent = priceLevel;
+            document.getElementById('price-status').textContent = getPriceStatus(priceLevel);
+            document.getElementById('price-bar').style.width = Math.min(100, (priceLevel / 200) * 100) + '%';
+
+            document.getElementById('purchasing-power').textContent = purchasingPower + '%';
+            document.getElementById('purchasing-status').textContent = getPurchasingStatus(purchasingPower);
+            document.getElementById('purchasing-bar').style.width = purchasingPower + '%';
+        }
+
+        function applyColors(config) {
+            const appContainer = document.getElementById('app-container');
+            appContainer.style.backgroundColor = config.background_color || defaultConfig.background_color;
+            appContainer.style.color = config.text_color || defaultConfig.text_color;
+
+            const surfaceElements = [
+                'control-panel', 'inflation-card', 'price-card', 
+                'purchasing-card', 'education-section', 'concept-1', 
+                'concept-2', 'concept-3'
+            ];
+            surfaceElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.style.backgroundColor = config.surface_color || defaultConfig.surface_color;
+                }
+            });
+
+            const headerSection = document.getElementById('header-section');
+            headerSection.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+            headerSection.style.color = '#ffffff';
+
+            const resetBtn = document.getElementById('reset-btn');
+            resetBtn.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+            resetBtn.style.color = '#ffffff';
+
+            const sliders = document.querySelectorAll('.slider');
+            sliders.forEach(slider => {
+                slider.style.background = `linear-gradient(to right, ${config.secondary_action_color || defaultConfig.secondary_action_color} 0%, ${config.secondary_action_color || defaultConfig.secondary_action_color} 50%, #e2e8f0 50%, #e2e8f0 100%)`;
+            });
+
+            const thumbColor = config.primary_action_color || defaultConfig.primary_action_color;
+            const style = document.createElement('style');
+            style.textContent = `
+                .slider::-webkit-slider-thumb {
+                    background: ${thumbColor};
+                }
+                .slider::-moz-range-thumb {
+                    background: ${thumbColor};
+                }
+            `;
+            document.head.appendChild(style);
+
+            const valueSpans = ['money-value', 'demand-value', 'production-value'];
+            valueSpans.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.style.backgroundColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+                    element.style.color = '#ffffff';
+                }
+            });
+
+            document.getElementById('purchasing-bar').style.backgroundColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+            document.getElementById('price-bar').style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+        }
+
+        function applyFont(config) {
+            const customFont = config.font_family || defaultConfig.font_family;
+            const baseFontStack = 'sans-serif';
+            document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+        }
+
+        function applyFontSize(config) {
+            const baseSize = config.font_size || defaultConfig.font_size;
+            
+            document.getElementById('main-title').style.fontSize = `${baseSize * 2}px`;
+            document.getElementById('subtitle').style.fontSize = `${baseSize * 1}px`;
+            
+            const h2Elements = document.querySelectorAll('h2');
+            h2Elements.forEach(el => el.style.fontSize = `${baseSize * 1.5}px`);
+            
+            const h3Elements = document.querySelectorAll('h3');
+            h3Elements.forEach(el => el.style.fontSize = `${baseSize * 1.25}px`);
+            
+            const h4Elements = document.querySelectorAll('h4');
+            h4Elements.forEach(el => el.style.fontSize = `${baseSize * 1.1}px`);
+            
+            const labels = document.querySelectorAll('label');
+            labels.forEach(el => el.style.fontSize = `${baseSize * 1}px`);
+            
+            const paragraphs = document.querySelectorAll('p');
+            paragraphs.forEach(el => el.style.fontSize = `${baseSize * 0.9}px`);
+            
+            const smallText = document.querySelectorAll('.opacity-70');
+            smallText.forEach(el => el.style.fontSize = `${baseSize * 0.85}px`);
+        }
+
+        function applyTextContent(config) {
+            document.getElementById('main-title').textContent = config.main_title || defaultConfig.main_title;
+            document.getElementById('subtitle').textContent = config.subtitle || defaultConfig.subtitle;
+            document.getElementById('money-supply-label').textContent = config.money_supply_label || defaultConfig.money_supply_label;
+            document.getElementById('demand-label').textContent = config.demand_label || defaultConfig.demand_label;
+            document.getElementById('production-label').textContent = config.production_label || defaultConfig.production_label;
+            document.getElementById('inflation-rate-label').textContent = config.inflation_rate_label || defaultConfig.inflation_rate_label;
+            document.getElementById('price-level-label').textContent = config.price_level_label || defaultConfig.price_level_label;
+            document.getElementById('purchasing-power-label').textContent = config.purchasing_power_label || defaultConfig.purchasing_power_label;
+        }
+
+        async function onConfigChange(config) {
+            applyColors(config);
+            applyFont(config);
+            applyFontSize(config);
+            applyTextContent(config);
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            config.background_color = value;
+                            window.elementSdk.setConfig({ background_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.surface_color || defaultConfig.surface_color,
+                        set: (value) => {
+                            config.surface_color = value;
+                            window.elementSdk.setConfig({ surface_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                        set: (value) => {
+                            config.primary_action_color = value;
+                            window.elementSdk.setConfig({ primary_action_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+                        set: (value) => {
+                            config.secondary_action_color = value;
+                            window.elementSdk.setConfig({ secondary_action_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: {
+                    get: () => config.font_family || defaultConfig.font_family,
+                    set: (value) => {
+                        config.font_family = value;
+                        window.elementSdk.setConfig({ font_family: value });
+                    }
+                },
+                fontSizeable: {
+                    get: () => config.font_size || defaultConfig.font_size,
+                    set: (value) => {
+                        config.font_size = value;
+                        window.elementSdk.setConfig({ font_size: value });
+                    }
+                }
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["main_title", config.main_title || defaultConfig.main_title],
+                ["subtitle", config.subtitle || defaultConfig.subtitle],
+                ["money_supply_label", config.money_supply_label || defaultConfig.money_supply_label],
+                ["demand_label", config.demand_label || defaultConfig.demand_label],
+                ["production_label", config.production_label || defaultConfig.production_label],
+                ["inflation_rate_label", config.inflation_rate_label || defaultConfig.inflation_rate_label],
+                ["price_level_label", config.price_level_label || defaultConfig.price_level_label],
+                ["purchasing_power_label", config.purchasing_power_label || defaultConfig.purchasing_power_label]
+            ]);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const moneySlider = document.getElementById('money-slider');
+            const demandSlider = document.getElementById('demand-slider');
+            const productionSlider = document.getElementById('production-slider');
+            const resetBtn = document.getElementById('reset-btn');
+
+            moneySlider.addEventListener('input', (e) => {
+                moneySupply = parseInt(e.target.value);
+                document.getElementById('money-value').textContent = moneySupply + '%';
+                updateSimulation();
+            });
+
+            demandSlider.addEventListener('input', (e) => {
+                demand = parseInt(e.target.value);
+                document.getElementById('demand-value').textContent = demand + '%';
+                updateSimulation();
+            });
+
+            productionSlider.addEventListener('input', (e) => {
+                production = parseInt(e.target.value);
+                document.getElementById('production-value').textContent = production + '%';
+                updateSimulation();
+            });
+
+            resetBtn.addEventListener('click', () => {
+                moneySupply = 100;
+                demand = 100;
+                production = 100;
+                
+                moneySlider.value = 100;
+                demandSlider.value = 100;
+                productionSlider.value = 100;
+                
+                document.getElementById('money-value').textContent = '100%';
+                document.getElementById('demand-value').textContent = '100%';
+                document.getElementById('production-value').textContent = '100%';
+                
+                updateSimulation();
+            });
+
+            updateSimulation();
+        });
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b57c8a8764dba5f',t:'MTc2Njk5NTQzNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
