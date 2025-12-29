@@ -1,751 +1,391 @@
 <!doctype html>
-<html lang="bn" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>মুদ্রাস্ফীতি সিমুলেশন - HSC অর্থনীতি</title><!-- Open Graph Meta Tags for Social Media -->
-  <meta property="og:title" content="মুদ্রাস্ফীতি সিমুলেশন - HSC অর্থনীতি">
-  <meta property="og:description" content="ইন্টারঅ্যাক্টিভভাবে মুদ্রাস্ফীতি বুঝুন। অর্থ সরবরাহ, চাহিদা ও উৎপাদন পরিবর্তন করে দেখুন কীভাবে দাম ও ক্রয়ক্ষমতা প্রভাবিত হয়।">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=1200&amp;h=630&amp;fit=crop&amp;q=80">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="মুদ্রাস্ফীতি সিমুলেশন - অর্থনীতি শিক্ষা"><!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="মুদ্রাস্ফীতি সিমুলেশন - HSC অর্থনীতি">
-  <meta name="twitter:description" content="ইন্টারঅ্যাক্টিভভাবে মুদ্রাস্ফীতি বুঝুন। অর্থ সরবরাহ, চাহিদা ও উৎপাদন পরিবর্তন করে দেখুন কীভাবে দাম ও ক্রয়ক্ষমতা প্রভাবিত হয়।">
-  <meta name="twitter:image" content="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=1200&amp;h=630&amp;fit=crop&amp;q=80"><!-- General Meta Tags -->
-  <meta name="description" content="HSC অর্থনীতির জন্য ইন্টারঅ্যাক্টিভ মুদ্রাস্ফীতি সিমুলেশন। চাহিদাজনিত, ব্যয়জনিত মুদ্রাস্ফীতি এবং অর্থ সরবরাহের প্রভাব বুঝুন।">
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আধুনিক মুদ্রাস্ফীতি সিমুলেশন - HSC অর্থনীতি</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
         body {
-            box-sizing: border-box;
+            font-family: 'Hind Siliguri', sans-serif;
+            background: linear-gradient(135deg, #1a1c2c 0%, #4a192c 100%);
+            color: #fff;
+            min-height: 100vh;
         }
-        
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&display=swap');
-        
-        * {
-            font-family: 'Noto Sans Bengali', sans-serif;
+
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
-        
-        .slider-container {
-            position: relative;
-            padding: 1rem 0;
-        }
-        
-        .slider {
+
+        /* Custom Range Slider */
+        input[type=range] {
             -webkit-appearance: none;
             width: 100%;
-            height: 8px;
-            border-radius: 5px;
-            outline: none;
-            transition: opacity 0.2s;
+            background: transparent;
         }
         
-        .slider::-webkit-slider-thumb {
+        input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            appearance: none;
-            width: 24px;
-            height: 24px;
+            height: 20px;
+            width: 20px;
             border-radius: 50%;
+            background: #ffffff;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-        }
-        
-        .slider::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-        
-        .slider::-moz-range-thumb:hover {
-            transform: scale(1.2);
-        }
-        
-        .chart-bar {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .info-card {
-            transition: all 0.3s ease;
-        }
-        
-        .info-card:hover {
-            transform: translateY(-4px);
-        }
-        
-        .pulse-animation {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.7;
-            }
+            margin-top: -8px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
         }
 
-        /* Modal Styles */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+        input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            z-index: 1000;
-            overflow-y: auto;
-            padding: 20px;
-            backdrop-filter: blur(4px);
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            max-width: 800px;
-            width: 100%;
-            max-height: 90%;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            animation: modalSlideIn 0.3s ease-out;
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            padding: 24px;
-            border-bottom: 2px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 10;
-            border-radius: 20px 20px 0 0;
-        }
-
-        .modal-body {
-            padding: 24px;
-            line-height: 1.8;
-        }
-
-        .close-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #f3f4f6;
-            border: none;
-            font-size: 24px;
+            height: 4px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            flex-shrink: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
         }
 
-        .close-btn:hover {
-            background: #e5e7eb;
-            transform: rotate(90deg);
+        /* Animations */
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .metric-value {
+            font-variant-numeric: tabular-nums;
         }
-
-        @media (max-width: 768px) {
-            .modal-content {
-                max-height: 95%;
-                margin: 10px;
-            }
-
-            .modal-header {
-                padding: 16px;
-            }
-
-            .modal-body {
-                padding: 16px;
-            }
-
-            .modal-header h3 {
-                font-size: 1.25rem;
-            }
+        
+        /* Modal Animation */
+        .modal {
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
         }
     </style>
-  <style>@view-transition { navigation: auto; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full w-full overflow-auto">
-  <div class="w-full h-full min-h-full" id="app-container"><!-- Header -->
-   <div class="text-center py-8 px-4" id="header-section">
-    <h1 class="mb-2 font-bold" id="main-title">মুদ্রাস্ফীতি সিমুলেশন</h1>
-    <p class="opacity-90" id="subtitle">HSC অর্থনীতি - ইন্টারঅ্যাক্টিভ শিক্ষা</p>
-   </div><!-- Main Content -->
-   <div class="max-w-7xl mx-auto px-4 pb-8">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><!-- Control Panel -->
-     <div class="rounded-2xl shadow-lg p-6" id="control-panel">
-      <h2 class="font-bold mb-6">নিয়ন্ত্রণ প্যানেল</h2><!-- Money Supply Slider -->
-      <div class="slider-container mb-6">
-       <div class="flex justify-between items-center mb-2"><label class="font-semibold" id="money-supply-label">অর্থ সরবরাহ</label> <span class="font-bold px-3 py-1 rounded-lg" id="money-value">100%</span>
-       </div><input type="range" min="50" max="200" value="100" class="slider" id="money-slider" aria-label="অর্থ সরবরাহ">
-       <div class="flex justify-between mt-1 opacity-70"><span>কম</span> <span>বেশি</span>
-       </div>
-      </div><!-- Demand Slider -->
-      <div class="slider-container mb-6">
-       <div class="flex justify-between items-center mb-2"><label class="font-semibold" id="demand-label">মোট চাহিদা</label> <span class="font-bold px-3 py-1 rounded-lg" id="demand-value">100%</span>
-       </div><input type="range" min="50" max="200" value="100" class="slider" id="demand-slider" aria-label="মোট চাহিদা">
-       <div class="flex justify-between mt-1 opacity-70"><span>কম</span> <span>বেশি</span>
-       </div>
-      </div><!-- Production Slider -->
-      <div class="slider-container mb-6">
-       <div class="flex justify-between items-center mb-2"><label class="font-semibold" id="production-label">উৎপাদন ক্ষমতা</label> <span class="font-bold px-3 py-1 rounded-lg" id="production-value">100%</span>
-       </div><input type="range" min="50" max="150" value="100" class="slider" id="production-slider" aria-label="উৎপাদন ক্ষমতা">
-       <div class="flex justify-between mt-1 opacity-70"><span>কম</span> <span>বেশি</span>
-       </div>
-      </div><!-- Reset Button --> <button id="reset-btn" class="w-full py-3 rounded-xl font-semibold transition-all duration-200 shadow-md"> রিসেট করুন </button>
-     </div><!-- Results Panel -->
-     <div class="space-y-6"><!-- Inflation Rate Card -->
-      <div class="info-card rounded-2xl shadow-lg p-6" id="inflation-card">
-       <div class="flex items-center justify-between mb-4">
-        <h3 class="font-bold" id="inflation-rate-label">মুদ্রাস্ফীতির হার</h3><span class="text-4xl">📈</span>
-       </div>
-       <div class="font-bold mb-2" id="inflation-rate">
-        0.0%
-       </div>
-       <div class="h-3 rounded-full overflow-hidden">
-        <div class="h-full transition-all duration-500 rounded-full" id="inflation-bar" style="width: 0%"></div>
-       </div>
-       <p class="mt-3 opacity-80" id="inflation-status">স্বাভাবিক অবস্থা</p>
-      </div><!-- Price Level Card -->
-      <div class="info-card rounded-2xl shadow-lg p-6" id="price-card">
-       <div class="flex items-center justify-between mb-4">
-        <h3 class="font-bold" id="price-level-label">মূল্য স্তর</h3><span class="text-4xl">💰</span>
-       </div>
-       <div class="font-bold mb-2" id="price-level">
-        100
-       </div>
-       <div class="h-3 rounded-full overflow-hidden">
-        <div class="h-full transition-all duration-500 rounded-full" id="price-bar" style="width: 50%"></div>
-       </div>
-       <p class="mt-3 opacity-80" id="price-status">বেসলাইন মূল্য</p>
-      </div><!-- Purchasing Power Card -->
-      <div class="info-card rounded-2xl shadow-lg p-6" id="purchasing-card">
-       <div class="flex items-center justify-between mb-4">
-        <h3 class="font-bold" id="purchasing-power-label">ক্রয়ক্ষমতা</h3><span class="text-4xl">🛒</span>
-       </div>
-       <div class="font-bold mb-2" id="purchasing-power">
-        100%
-       </div>
-       <div class="h-3 rounded-full overflow-hidden">
-        <div class="h-full transition-all duration-500 rounded-full" id="purchasing-bar" style="width: 100%"></div>
-       </div>
-       <p class="mt-3 opacity-80" id="purchasing-status">স্বাভাবিক ক্রয়ক্ষমতা</p>
-      </div>
-     </div>
-    </div><!-- Educational Content -->
-    <div class="mt-8 rounded-2xl shadow-lg p-6" id="education-section">
-     <h2 class="font-bold mb-4">মুদ্রাস্ফীতি সম্পর্কে জানুন</h2>
-     <div class="grid grid-cols-1 md:grid-cols-3 gap-4"><button class="p-4 rounded-xl text-left transition-all hover:shadow-xl cursor-pointer" id="concept-1" onclick="openModal('modal-1')">
-       <div class="text-3xl mb-2">
-        💵
-       </div><h4 class="font-semibold mb-2">চাহিদাজনিত মুদ্রাস্ফীতি</h4><p class="opacity-80">যখন মোট চাহিদা উৎপাদন ক্ষমতার চেয়ে বেশি হয়, তখন দাম বৃদ্ধি পায়।</p><p class="mt-2 font-semibold text-sm">বিস্তারিত দেখুন →</p></button> <button class="p-4 rounded-xl text-left transition-all hover:shadow-xl cursor-pointer" id="concept-2" onclick="openModal('modal-2')">
-       <div class="text-3xl mb-2">
-        🏭
-       </div><h4 class="font-semibold mb-2">ব্যয়জনিত মুদ্রাস্ফীতি</h4><p class="opacity-80">উৎপাদন খরচ বৃদ্ধি পেলে পণ্যের দাম বাড়ে এবং মুদ্রাস্ফীতি হয়।</p><p class="mt-2 font-semibold text-sm">বিস্তারিত দেখুন →</p></button> <button class="p-4 rounded-xl text-left transition-all hover:shadow-xl cursor-pointer" id="concept-3" onclick="openModal('modal-3')">
-       <div class="text-3xl mb-2">
-        🔄
-       </div><h4 class="font-semibold mb-2">অর্থ সরবরাহ ও মুদ্রাস্ফীতি</h4><p class="opacity-80">অতিরিক্ত অর্থ সরবরাহ বাজারে টাকার মূল্য কমায় এবং দাম বাড়ায়।</p><p class="mt-2 font-semibold text-sm">বিস্তারিত দেখুন →</p></button>
-     </div>
+</head>
+<body class="p-4 md:p-8 overflow-x-hidden">
+
+    <header class="max-w-7xl mx-auto mb-8 text-center fade-in">
+        <h1 class="text-4xl md:text-5xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-pink-300">
+            মুদ্রাস্ফীতি ল্যাব
+        </h1>
+        <p class="text-gray-300 text-lg">HSC অর্থনীতি • হাতে-কলমে শিখুন</p>
+    </header>
+
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <div class="lg:col-span-4 space-y-6 fade-in" style="animation-delay: 0.1s;">
+            
+            <div class="glass-panel p-6">
+                <h3 class="text-xl font-semibold mb-4 text-blue-200">🔹 বিভিন্ন পরিস্থিতি (Scenarios)</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="setScenario('eid')" class="p-2 bg-blue-600/30 hover:bg-blue-600/50 rounded-lg text-sm transition border border-blue-500/30">ঈদ উৎসব (চাহিদা বৃদ্ধি)</button>
+                    <button onclick="setScenario('war')" class="p-2 bg-red-600/30 hover:bg-red-600/50 rounded-lg text-sm transition border border-red-500/30">যুদ্ধ (যোগান হ্রাস)</button>
+                    <button onclick="setScenario('printing')" class="p-2 bg-green-600/30 hover:bg-green-600/50 rounded-lg text-sm transition border border-green-500/30">অতিরিক্ত নোট ছাপানো</button>
+                    <button onclick="setScenario('bumper')" class="p-2 bg-yellow-600/30 hover:bg-yellow-600/50 rounded-lg text-sm transition border border-yellow-500/30">বাম্পার ফলন</button>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 space-y-8">
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <label class="text-green-300 font-semibold">💸 অর্থ সরবরাহ (Money Supply)</label>
+                        <span id="money-display" class="font-bold bg-green-500/20 px-2 rounded">100%</span>
+                    </div>
+                    <input type="range" id="money-slider" min="50" max="200" value="100">
+                    <p class="text-xs text-gray-400 mt-1">কেন্দ্রীয় ব্যাংক কত টাকা বাজারে ছাড়ছে</p>
+                </div>
+
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <label class="text-blue-300 font-semibold">🛒 মোট চাহিদা (Aggregate Demand)</label>
+                        <span id="demand-display" class="font-bold bg-blue-500/20 px-2 rounded">100%</span>
+                    </div>
+                    <input type="range" id="demand-slider" min="50" max="200" value="100">
+                    <p class="text-xs text-gray-400 mt-1">মানুষের পণ্য কেনার আগ্রহ বা ক্ষমতা</p>
+                </div>
+
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <label class="text-yellow-300 font-semibold">🏭 উৎপাদন (Production)</label>
+                        <span id="production-display" class="font-bold bg-yellow-500/20 px-2 rounded">100%</span>
+                    </div>
+                    <input type="range" id="production-slider" min="50" max="150" value="100">
+                    <p class="text-xs text-gray-400 mt-1">বাজারে পণ্যের জোগান বা প্রাপ্যতা</p>
+                </div>
+
+                <button onclick="resetSimulation()" class="w-full py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-semibold border border-white/10">
+                    🔄 রিসেট করুন
+                </button>
+            </div>
+        </div>
+
+        <div class="lg:col-span-8 space-y-6 fade-in" style="animation-delay: 0.2s;">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="glass-panel p-4 text-center border-t-4 border-t-red-500 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-red-500/10 transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom"></div>
+                    <h4 class="text-gray-300 text-sm">মুদ্রাস্ফীতির হার</h4>
+                    <div class="text-3xl font-bold my-2 metric-value" id="inflation-rate">0.0%</div>
+                    <div class="text-xs px-2 py-1 rounded-full inline-block bg-gray-700" id="inflation-status">স্বাভাবিক</div>
+                </div>
+
+                <div class="glass-panel p-4 text-center border-t-4 border-t-blue-500 relative overflow-hidden group">
+                     <div class="absolute inset-0 bg-blue-500/10 transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom"></div>
+                    <h4 class="text-gray-300 text-sm">পণ্যের দাম (সূচক)</h4>
+                    <div class="text-3xl font-bold my-2 metric-value" id="price-level">100</div>
+                    <div class="text-xs text-gray-400">ভিত্তি বছর = ১০০</div>
+                </div>
+
+                <div class="glass-panel p-4 text-center border-t-4 border-t-green-500 relative overflow-hidden group">
+                     <div class="absolute inset-0 bg-green-500/10 transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom"></div>
+                    <h4 class="text-gray-300 text-sm">টাকার ক্রয়ক্ষমতা</h4>
+                    <div class="text-3xl font-bold my-2 metric-value" id="purchasing-power">100%</div>
+                    <div class="text-xs text-gray-400">টাকার আসল মান</div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 h-80 relative">
+                <h3 class="text-sm text-gray-400 absolute top-4 left-6">📊 সময়ের সাথে পরিবর্তন</h3>
+                <canvas id="inflationChart"></canvas>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div onclick="openModal('demandPull')" class="glass-panel p-4 cursor-pointer hover:bg-white/10 transition text-center">
+                    <span class="text-3xl">🛍️</span>
+                    <h4 class="font-bold mt-2">চাহিদাজনিত</h4>
+                    <p class="text-xs text-gray-400 mt-1">চাহিদা বাড়লে যা হয়</p>
+                </div>
+                <div onclick="openModal('costPush')" class="glass-panel p-4 cursor-pointer hover:bg-white/10 transition text-center">
+                    <span class="text-3xl">⛽</span>
+                    <h4 class="font-bold mt-2">ব্যয়জনিত</h4>
+                    <p class="text-xs text-gray-400 mt-1">উৎপাদন খরচ বাড়লে</p>
+                </div>
+                <div onclick="openModal('moneySupply')" class="glass-panel p-4 cursor-pointer hover:bg-white/10 transition text-center">
+                    <span class="text-3xl">🖨️</span>
+                    <h4 class="font-bold mt-2">অর্থ সরবরাহ</h4>
+                    <p class="text-xs text-gray-400 mt-1">টাকা ছাপানোর প্রভাব</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="infoModal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="glass-panel bg-gray-900 p-8 max-w-lg w-full relative z-10 transform transition-all scale-100">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">✕</button>
+            <h2 id="modalTitle" class="text-2xl font-bold mb-4 text-blue-300"></h2>
+            <div id="modalContent" class="text-gray-300 leading-relaxed space-y-3"></div>
+        </div>
     </div>
-   </div><!-- Modal 1: চাহিদাজনিত মুদ্রাস্ফীতি -->
-   <div id="modal-1" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'modal-1')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-     <div class="modal-header">
-      <div class="flex items-center gap-3"><span class="text-4xl">💵</span>
-       <h3 class="font-bold text-2xl">চাহিদাজনিত মুদ্রাস্ফীতি</h3>
-      </div><button onclick="closeModal('modal-1')" class="close-btn" aria-label="বন্ধ করুন">✕</button>
-     </div>
-     <div class="modal-body">
-      <div class="mb-6">
-       <h4 class="font-bold text-lg mb-2">সংজ্ঞা:</h4>
-       <p class="leading-relaxed">চাহিদাজনিত মুদ্রাস্ফীতি হলো এমন একটি অবস্থা যখন অর্থনীতিতে পণ্য ও সেবার মোট চাহিদা মোট যোগানের তুলনায় দ্রুত বৃদ্ধি পায়। এর ফলে পণ্যের দাম বৃদ্ধি পায় এবং মুদ্রাস্ফীতি সৃষ্টি হয়।</p>
-      </div>
-      <div class="mb-6">
-       <h4 class="font-bold text-lg mb-2">কারণসমূহ:</h4>
-       <ul class="list-disc list-inside space-y-2 ml-4">
-        <li><strong>ভোক্তা ব্যয় বৃদ্ধি:</strong> মানুষের আয় বৃদ্ধি পেলে তারা বেশি পণ্য কিনতে চায়</li>
-        <li><strong>সরকারি ব্যয় বৃদ্ধি:</strong> সরকার যখন উন্নয়ন প্রকল্পে বেশি খরচ করে</li>
-        <li><strong>বিনিয়োগ বৃদ্ধি:</strong> ব্যবসায়ীরা নতুন কারখানা ও যন্ত্রপাতি কিনলে</li>
-        <li><strong>রপ্তানি বৃদ্ধি:</strong> বিদেশে পণ্যের চাহিদা বাড়লে</li>
-        <li><strong>সহজ ঋণ নীতি:</strong> ব্যাংক সহজে ঋণ দিলে মানুষ বেশি খরচ করে</li>
-       </ul>
-      </div>
-      <div class="mb-6">
-       <h4 class="font-bold text-lg mb-2">প্রভাব:</h4>
-       <ul class="list-disc list-inside space-y-2 ml-4">
-        <li>পণ্যের দাম দ্রুত বৃদ্ধি পায়</li>
-        <li>স্থির আয়ের মানুষের ক্রয়ক্ষমতা হ্রাস পায়</li>
-        <li>উৎপাদনকারীরা বেশি উৎপাদনে উৎসাহিত হয়</li>
-        <li>কর্মসংস্থান বৃদ্ধি পেতে পারে</li>
-       </ul>
-      </div>
-      <div class="p-4 rounded-lg" style="background-color: rgba(59, 130, 246, 0.1);">
-       <h4 class="font-bold mb-2">উদাহরণ:</h4>
-       <p>ঈদের সময় মানুষের ক্রয়ক্ষমতা বৃদ্ধি পায় এবং সবাই নতুন পোশাক কিনতে চায়। কিন্তু দোকানে সীমিত পরিমাণ পোশাক থাকায় দাম বেড়ে যায়। এটি চাহিদাজনিত মুদ্রাস্ফীতির একটি উদাহরণ।</p>
-      </div>
-     </div>
-    </div>
-   </div><!-- Modal 2: ব্যয়জনিত মুদ্রাস্ফীতি -->
-   <div id="modal-2" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'modal-2')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-     <div class="modal-header">
-      <div class="flex items-center gap-3"><span class="text-4xl">🏭</span>
-       <h3 class="font-bold text-2xl">ব্যয়জনিত মুদ্রাস্ফীতি</h3>
-      </div><button onclick="closeModal('modal-2')" class="close-btn" aria-label="বন্ধ করুন">✕</button>
-     </div>
-     <div class="modal-body">
-      <div class="mb-6">
-       <h4 class="font-bold text-lg mb-2">সংজ্ঞা:</h4>
-       <p class="leading-relaxed">ব্যয়জনিত মুদ্রাস্ফীতি ঘটে যখন উৎপাদন খরচ বৃদ্ধি পাওয়ার কারণে পণ্যের দাম বাড়ে। উৎপাদনকারীরা বর্ধিত খরচ পূরণের জন্য পণ্যের দাম বাড়িয়ে দেয়।</p>
-      </div>
-      <div class="mb-6">
-       <h4 class="font-bold text-lg mb-2">কারণসমূহ:</h4>
-       <ul class="list-disc list-inside space-y-2 ml-4">
-        <li><strong>কাঁচামালের দাম বৃদ্ধি:</strong> তেল, গ্যাস, ধাতু ইত্যাদির দাম বাড়লে</li>
-        <li><strong>মজুরি বৃদ্ধি:</strong> শ্রমিকদের বেতন বাড়লে উৎপাদন খরচ বাড়ে</li>
-        <li><strong>কর বৃদ্ধি:</strong> সরকার পণ্যের উপর বেশি কর আরোপ করলে</li>
-        <li><strong>আমদানি খরচ বৃদ্ধি:</strong> বিদেশি মুদ্রার দাম বাড়লে আমদানি ব্যয়বহুল হয়</li>
-        <li><strong>প্রাকৃতিক দুর্যোগ:</strong> বন্যা, খরা ইত্যাদি উৎপাদন ব্যাহত করলে</li>
-        <li><strong>একচেটিয়া বাজার:</strong> কিছু কোম্পানি বাজার নিয়ন্ত্রণ করে দাম বাড়ালে</li>
-       </ul>
-      </div>
-      <div class="mb-6">
-       <h4 class="font-bold text-lg mb-2">প্রভাব:</h4>
-       <ul class="list-disc list-inside space-y-2 ml-4">
-        <li>পণ্যের দাম বৃদ্ধি পায়</li>
-        <li>উৎপাদন হ্রাস পেতে পারে</li>
-        <li>বেকারত্ব বৃদ্ধি পেতে পারে</li>
-        <li>অর্থনৈতিক মন্দা সৃষ্টি হতে পারে (স্ট্যাগফ্লেশন)</li>
-        <li>ব্যবসায়ীদের লাভ কমে যায়</li>
-       </ul>
-      </div>
-      <div class="p-4 rounded-lg" style="background-color: rgba(239, 68, 68, 0.1);">
-       <h4 class="font-bold mb-2">উদাহরণ:</h4>
-       <p>২০২২ সালে রাশিয়া-ইউক্রেন যুদ্ধের কারণে বিশ্বব্যাপী তেলের দাম বৃদ্ধি পায়। এর ফলে পরিবহন খরচ বেড়ে যায় এবং সব ধরনের পণ্যের দাম বৃদ্ধি পায়। এটি ব্যয়জনিত মুদ্রাস্ফীতির একটি বাস্তব উদাহরণ।</p>
-      </div>
-     </div>
-    </div>
-   </div><!-- Modal 3: অর্থ সরবরাহ ও মুদ্রাস্ফীতি -->
-   <div id="modal-3" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'modal-3')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-     <div class="modal-header">
-      <div class="flex items-center gap-3"><span class="text-4xl">🔄</span>
-       <h3 class="font-bold text-2xl">অর্থ সরবরাহ ও মুদ্রাস্ফীতি</h3>
-      </div><button onclick="closeModal('modal-3')" class="close-btn" aria-label="বন্ধ করুন">✕</button>
-     </div>
-     <div class="modal-body">
-      <div class="mb-6">
-       <h4 class="font-bold text-lg mb-2">সংজ্ঞা:</h4>
-       <p class="leading-relaxed">অর্থ সরবরাহ বলতে একটি দেশের অর্থনীতিতে প্রচলিত মোট অর্থের পরিমাণকে বোঝায়। যখন কেন্দ্রীয় ব্যাংক বাজারে অতিরিক্ত অর্থ ছাড়ে, তখন টাকার মূল্য কমে যায় এবং পণ্যের দাম বৃদ্ধি পায়, যা মুদ্রাস্ফীতি সৃষ্টি করে।</p>
-      </div>
-      <div class="mb-6">
-       <h4 class="font-bold text-lg mb-2">অর্থ সরবরাহ বৃদ্ধির উপায়:</h4>
-       <ul class="list-disc list-inside space-y-2 ml-4">
-        <li><strong>নোট ছাপানো:</strong> কেন্দ্রীয় ব্যাংক নতুন নোট ছাপিয়ে বাজারে ছাড়ে</li>
-        <li><strong>সুদের হার কমানো:</strong> কম সুদে ব্যাংক বেশি ঋণ দেয়</li>
-        <li><strong>সরকারি বন্ড কেনা:</strong> কেন্দ্রীয় ব্যাংক বাজার থেকে বন্ড কিনে অর্থ যোগান দেয়</li>
-        <li><strong>রিজার্ভ রেশিও কমানো:</strong> ব্যাংকগুলো কম টাকা জমা রেখে বেশি ঋণ দিতে পারে</li>
-       </ul>
-      </div>
-      <div class="mb-6">
-       <h4 class="font-bold text-lg mb-2">মুদ্রাস্ফীতির সাথে সম্পর্ক:</h4>
-       <p class="leading-relaxed mb-3">অর্থনীতিবিদ মিল্টন ফ্রিডম্যানের মতে, "মুদ্রাস্ফীতি সর্বদা এবং সর্বত্র একটি আর্থিক ঘটনা।" অর্থাৎ:</p>
-       <ul class="list-disc list-inside space-y-2 ml-4">
-        <li>অর্থ সরবরাহ বাড়লে → মানুষের হাতে বেশি টাকা → বেশি খরচ → চাহিদা বৃদ্ধি → দাম বৃদ্ধি</li>
-        <li>পণ্যের পরিমাণ একই থাকলে কিন্তু টাকার পরিমাণ বাড়লে টাকার মূল্য কমে</li>
-        <li>অতিরিক্ত অর্থ সরবরাহ অতি মুদ্রাস্ফীতি (Hyperinflation) সৃষ্টি করতে পারে</li>
-       </ul>
-      </div>
-      <div class="mb-6">
-       <h4 class="font-bold text-lg mb-2">নিয়ন্ত্রণের উপায়:</h4>
-       <ul class="list-disc list-inside space-y-2 ml-4">
-        <li><strong>সুদের হার বৃদ্ধি:</strong> ঋণ নিতে নিরুৎসাহিত করে</li>
-        <li><strong>সরকারি বন্ড বিক্রয়:</strong> বাজার থেকে অর্থ শোষণ করে</li>
-        <li><strong>রিজার্ভ রেশিও বৃদ্ধি:</strong> ব্যাংকের ঋণ দেয়ার ক্ষমতা কমায়</li>
-        <li><strong>সরকারি ব্যয় হ্রাস:</strong> চাহিদা কমিয়ে মুদ্রাস্ফীতি নিয়ন্ত্রণ করে</li>
-       </ul>
-      </div>
-      <div class="p-4 rounded-lg" style="background-color: rgba(16, 185, 129, 0.1);">
-       <h4 class="font-bold mb-2">উদাহরণ:</h4>
-       <p>জিম্বাবুয়েতে ২০০৮ সালে সরকার অতিরিক্ত নোট ছাপায়। এর ফলে অতি মুদ্রাস্ফীতি দেখা দেয় এবং মুদ্রাস্ফীতির হার ৮৯.৭ সেক্সটিলিয়ন শতাংশে পৌঁছায়। একটি রুটির দাম কয়েক বিলিয়ন ডলার হয়ে যায়। এটি অনিয়ন্ত্রিত অর্থ সরবরাহের ভয়াবহ পরিণতির উদাহরণ।</p>
-      </div>
-     </div>
-    </div>
-   </div>
-  </div>
-  <script>
-        const defaultConfig = {
-            background_color: "#f0f4f8",
-            surface_color: "#ffffff",
-            text_color: "#1e293b",
-            primary_action_color: "#3b82f6",
-            secondary_action_color: "#10b981",
-            main_title: "মুদ্রাস্ফীতি সিমুলেশন",
-            subtitle: "HSC অর্থনীতি - ইন্টারঅ্যাক্টিভ শিক্ষা",
-            money_supply_label: "অর্থ সরবরাহ",
-            demand_label: "মোট চাহিদা",
-            production_label: "উৎপাদন ক্ষমতা",
-            inflation_rate_label: "মুদ্রাস্ফীতির হার",
-            price_level_label: "মূল্য স্তর",
-            purchasing_power_label: "ক্রয়ক্ষমতা",
-            font_family: "Noto Sans Bengali",
-            font_size: 16
+
+    <script>
+        // --- 1. State Management ---
+        const state = {
+            money: 100,
+            demand: 100,
+            production: 100,
+            history: [] // For the chart
         };
 
-        let moneySupply = 100;
-        let demand = 100;
-        let production = 100;
+        // --- 2. Elements ---
+        const els = {
+            moneySlider: document.getElementById('money-slider'),
+            demandSlider: document.getElementById('demand-slider'),
+            prodSlider: document.getElementById('production-slider'),
+            moneyDisp: document.getElementById('money-display'),
+            demandDisp: document.getElementById('demand-display'),
+            prodDisp: document.getElementById('production-display'),
+            infRate: document.getElementById('inflation-rate'),
+            infStatus: document.getElementById('inflation-status'),
+            priceLvl: document.getElementById('price-level'),
+            purchPower: document.getElementById('purchasing-power')
+        };
 
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        function closeModalOnBackdrop(event, modalId) {
-            if (event.target.classList.contains('modal-overlay')) {
-                closeModal(modalId);
-            }
-        }
-
-        function calculateInflation() {
-            const supplyDemandGap = (demand - production) / production;
-            const moneyEffect = (moneySupply - 100) / 100;
-            const inflationRate = (supplyDemandGap * 50) + (moneyEffect * 30);
-            return Math.max(-10, Math.min(50, inflationRate));
-        }
-
-        function calculatePriceLevel() {
-            const inflation = calculateInflation();
-            return Math.round(100 + inflation * 2);
-        }
-
-        function calculatePurchasingPower() {
-            const priceLevel = calculatePriceLevel();
-            return Math.round((100 / priceLevel) * 100);
-        }
-
-        function getInflationStatus(rate) {
-            if (rate < 0) return "মূল্যহ্রাস (ডিফ্লেশন)";
-            if (rate < 2) return "স্বাভাবিক অবস্থা";
-            if (rate < 5) return "মৃদু মুদ্রাস্ফীতি";
-            if (rate < 10) return "মাঝারি মুদ্রাস্ফীতি";
-            if (rate < 20) return "উচ্চ মুদ্রাস্ফীতি";
-            return "অতি মুদ্রাস্ফীতি";
-        }
-
-        function getPriceStatus(level) {
-            if (level < 90) return "মূল্য হ্রাস";
-            if (level < 110) return "বেসলাইন মূল্য";
-            if (level < 130) return "মূল্য বৃদ্ধি";
-            return "উচ্চ মূল্য";
-        }
-
-        function getPurchasingStatus(power) {
-            if (power > 90) return "স্বাভাবিক ক্রয়ক্ষমতা";
-            if (power > 70) return "হ্রাসকৃত ক্রয়ক্ষমতা";
-            if (power > 50) return "নিম্ন ক্রয়ক্ষমতা";
-            return "অতি নিম্ন ক্রয়ক্ষমতা";
-        }
-
-        function getInflationColor(rate) {
-            if (rate < 0) return "#3b82f6";
-            if (rate < 2) return "#10b981";
-            if (rate < 5) return "#f59e0b";
-            if (rate < 10) return "#f97316";
-            return "#ef4444";
-        }
-
-        function updateSimulation() {
-            const inflation = calculateInflation();
-            const priceLevel = calculatePriceLevel();
-            const purchasingPower = calculatePurchasingPower();
-
-            document.getElementById('inflation-rate').textContent = inflation.toFixed(1) + '%';
-            document.getElementById('inflation-status').textContent = getInflationStatus(inflation);
-            document.getElementById('inflation-bar').style.width = Math.min(100, Math.abs(inflation) * 2) + '%';
-            
-            const inflationColor = getInflationColor(inflation);
-            document.getElementById('inflation-bar').style.backgroundColor = inflationColor;
-            document.getElementById('inflation-card').style.borderLeft = `6px solid ${inflationColor}`;
-
-            document.getElementById('price-level').textContent = priceLevel;
-            document.getElementById('price-status').textContent = getPriceStatus(priceLevel);
-            document.getElementById('price-bar').style.width = Math.min(100, (priceLevel / 200) * 100) + '%';
-
-            document.getElementById('purchasing-power').textContent = purchasingPower + '%';
-            document.getElementById('purchasing-status').textContent = getPurchasingStatus(purchasingPower);
-            document.getElementById('purchasing-bar').style.width = purchasingPower + '%';
-        }
-
-        function applyColors(config) {
-            const appContainer = document.getElementById('app-container');
-            appContainer.style.backgroundColor = config.background_color || defaultConfig.background_color;
-            appContainer.style.color = config.text_color || defaultConfig.text_color;
-
-            const surfaceElements = [
-                'control-panel', 'inflation-card', 'price-card', 
-                'purchasing-card', 'education-section', 'concept-1', 
-                'concept-2', 'concept-3'
-            ];
-            surfaceElements.forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.style.backgroundColor = config.surface_color || defaultConfig.surface_color;
-                }
-            });
-
-            const headerSection = document.getElementById('header-section');
-            headerSection.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
-            headerSection.style.color = '#ffffff';
-
-            const resetBtn = document.getElementById('reset-btn');
-            resetBtn.style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
-            resetBtn.style.color = '#ffffff';
-
-            const sliders = document.querySelectorAll('.slider');
-            sliders.forEach(slider => {
-                slider.style.background = `linear-gradient(to right, ${config.secondary_action_color || defaultConfig.secondary_action_color} 0%, ${config.secondary_action_color || defaultConfig.secondary_action_color} 50%, #e2e8f0 50%, #e2e8f0 100%)`;
-            });
-
-            const thumbColor = config.primary_action_color || defaultConfig.primary_action_color;
-            const style = document.createElement('style');
-            style.textContent = `
-                .slider::-webkit-slider-thumb {
-                    background: ${thumbColor};
-                }
-                .slider::-moz-range-thumb {
-                    background: ${thumbColor};
-                }
-            `;
-            document.head.appendChild(style);
-
-            const valueSpans = ['money-value', 'demand-value', 'production-value'];
-            valueSpans.forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.style.backgroundColor = config.secondary_action_color || defaultConfig.secondary_action_color;
-                    element.style.color = '#ffffff';
-                }
-            });
-
-            document.getElementById('purchasing-bar').style.backgroundColor = config.secondary_action_color || defaultConfig.secondary_action_color;
-            document.getElementById('price-bar').style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
-        }
-
-        function applyFont(config) {
-            const customFont = config.font_family || defaultConfig.font_family;
-            const baseFontStack = 'sans-serif';
-            document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
-        }
-
-        function applyFontSize(config) {
-            const baseSize = config.font_size || defaultConfig.font_size;
-            
-            document.getElementById('main-title').style.fontSize = `${baseSize * 2}px`;
-            document.getElementById('subtitle').style.fontSize = `${baseSize * 1}px`;
-            
-            const h2Elements = document.querySelectorAll('h2');
-            h2Elements.forEach(el => el.style.fontSize = `${baseSize * 1.5}px`);
-            
-            const h3Elements = document.querySelectorAll('h3');
-            h3Elements.forEach(el => el.style.fontSize = `${baseSize * 1.25}px`);
-            
-            const h4Elements = document.querySelectorAll('h4');
-            h4Elements.forEach(el => el.style.fontSize = `${baseSize * 1.1}px`);
-            
-            const labels = document.querySelectorAll('label');
-            labels.forEach(el => el.style.fontSize = `${baseSize * 1}px`);
-            
-            const paragraphs = document.querySelectorAll('p');
-            paragraphs.forEach(el => el.style.fontSize = `${baseSize * 0.9}px`);
-            
-            const smallText = document.querySelectorAll('.opacity-70');
-            smallText.forEach(el => el.style.fontSize = `${baseSize * 0.85}px`);
-        }
-
-        function applyTextContent(config) {
-            document.getElementById('main-title').textContent = config.main_title || defaultConfig.main_title;
-            document.getElementById('subtitle').textContent = config.subtitle || defaultConfig.subtitle;
-            document.getElementById('money-supply-label').textContent = config.money_supply_label || defaultConfig.money_supply_label;
-            document.getElementById('demand-label').textContent = config.demand_label || defaultConfig.demand_label;
-            document.getElementById('production-label').textContent = config.production_label || defaultConfig.production_label;
-            document.getElementById('inflation-rate-label').textContent = config.inflation_rate_label || defaultConfig.inflation_rate_label;
-            document.getElementById('price-level-label').textContent = config.price_level_label || defaultConfig.price_level_label;
-            document.getElementById('purchasing-power-label').textContent = config.purchasing_power_label || defaultConfig.purchasing_power_label;
-        }
-
-        async function onConfigChange(config) {
-            applyColors(config);
-            applyFont(config);
-            applyFontSize(config);
-            applyTextContent(config);
-        }
-
-        function mapToCapabilities(config) {
-            return {
-                recolorables: [
-                    {
-                        get: () => config.background_color || defaultConfig.background_color,
-                        set: (value) => {
-                            config.background_color = value;
-                            if (window.elementSdk) window.elementSdk.setConfig({ background_color: value });
-                        }
-                    },
-                    {
-                        get: () => config.surface_color || defaultConfig.surface_color,
-                        set: (value) => {
-                            config.surface_color = value;
-                            if (window.elementSdk) window.elementSdk.setConfig({ surface_color: value });
-                        }
-                    },
-                    {
-                        get: () => config.text_color || defaultConfig.text_color,
-                        set: (value) => {
-                            config.text_color = value;
-                            if (window.elementSdk) window.elementSdk.setConfig({ text_color: value });
-                        }
-                    },
-                    {
-                        get: () => config.primary_action_color || defaultConfig.primary_action_color,
-                        set: (value) => {
-                            config.primary_action_color = value;
-                            if (window.elementSdk) window.elementSdk.setConfig({ primary_action_color: value });
-                        }
-                    },
-                    {
-                        get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
-                        set: (value) => {
-                            config.secondary_action_color = value;
-                            if (window.elementSdk) window.elementSdk.setConfig({ secondary_action_color: value });
-                        }
-                    }
-                ],
-                borderables: [],
-                fontEditable: {
-                    get: () => config.font_family || defaultConfig.font_family,
-                    set: (value) => {
-                        config.font_family = value;
-                        if (window.elementSdk) window.elementSdk.setConfig({ font_family: value });
-                    }
+        // --- 3. Chart Initialization ---
+        const ctx = document.getElementById('inflationChart').getContext('2d');
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+        
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array(20).fill(''), // Empty labels for clean look
+                datasets: [{
+                    label: 'মুদ্রাস্ফীতি (%)',
+                    data: Array(20).fill(0),
+                    borderColor: '#f472b6',
+                    backgroundColor: 'rgba(244, 114, 182, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
                 },
-                fontSizeable: {
-                    get: () => config.font_size || defaultConfig.font_size,
-                    set: (value) => {
-                        config.font_size = value;
-                        if (window.elementSdk) window.elementSdk.setConfig({ font_size: value });
-                    }
-                }
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    },
+                    x: { display: false }
+                },
+                animation: { duration: 0 } // Disable animation for real-time feel
+            }
+        });
+
+        // --- 4. Logic & Calculation ---
+        function calculate() {
+            // Formula Logic
+            const supplyDemandGap = (state.demand - state.production); 
+            const moneyEffect = (state.money - 100);
+            
+            // Weighted inflation calculation
+            let inflation = (supplyDemandGap * 0.6) + (moneyEffect * 0.4);
+            
+            // Cap visual limits slightly
+            inflation = Math.max(-20, Math.min(100, inflation));
+
+            const priceLevel = 100 + (inflation * 1.5);
+            const purchasingPower = (100 / priceLevel) * 100;
+
+            return { 
+                inf: inflation.toFixed(1), 
+                price: Math.round(priceLevel), 
+                power: Math.round(purchasingPower) 
             };
         }
 
-        function mapToEditPanelValues(config) {
-            return new Map([
-                ["main_title", config.main_title || defaultConfig.main_title],
-                ["subtitle", config.subtitle || defaultConfig.subtitle],
-                ["money_supply_label", config.money_supply_label || defaultConfig.money_supply_label],
-                ["demand_label", config.demand_label || defaultConfig.demand_label],
-                ["production_label", config.production_label || defaultConfig.production_label],
-                ["inflation_rate_label", config.inflation_rate_label || defaultConfig.inflation_rate_label],
-                ["price_level_label", config.price_level_label || defaultConfig.price_level_label],
-                ["purchasing_power_label", config.purchasing_power_label || defaultConfig.purchasing_power_label]
-            ]);
+        function updateUI() {
+            const data = calculate();
+
+            // Text Updates
+            els.moneyDisp.innerText = state.money + '%';
+            els.demandDisp.innerText = state.demand + '%';
+            els.prodDisp.innerText = state.production + '%';
+
+            els.infRate.innerText = data.inf + '%';
+            els.priceLvl.innerText = data.price;
+            els.purchPower.innerText = data.power + '%';
+
+            // Styling based on severity
+            const infVal = parseFloat(data.inf);
+            els.infRate.style.color = infVal > 10 ? '#ef4444' : (infVal < 0 ? '#3b82f6' : '#fff');
+            
+            let statusText = "স্বাভাবিক";
+            if(infVal > 20) statusText = "অতি মুদ্রাস্ফীতি (Hyperinflation)";
+            else if(infVal > 10) statusText = "উচ্চ মুদ্রাস্ফীতি";
+            else if(infVal > 5) statusText = "মৃদু মুদ্রাস্ফীতি";
+            else if(infVal < 0) statusText = "মুদ্রাসংকোচন (Deflation)";
+            els.infStatus.innerText = statusText;
+            els.infStatus.className = `text-xs px-2 py-1 rounded-full inline-block ${infVal > 5 ? 'bg-red-500/20 text-red-300' : 'bg-green-500/20 text-green-300'}`;
+
+            // Chart Update
+            const currentData = chart.data.datasets[0].data;
+            currentData.shift(); // Remove oldest
+            currentData.push(infVal); // Add newest
+            
+            // Color change for chart based on value
+            chart.data.datasets[0].borderColor = infVal > 10 ? '#ef4444' : '#f472b6';
+            chart.data.datasets[0].backgroundColor = infVal > 10 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(244, 114, 182, 0.1)';
+            
+            chart.update();
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const moneySlider = document.getElementById('money-slider');
-            const demandSlider = document.getElementById('demand-slider');
-            const productionSlider = document.getElementById('production-slider');
-            const resetBtn = document.getElementById('reset-btn');
-
-            moneySlider.addEventListener('input', (e) => {
-                moneySupply = parseInt(e.target.value);
-                document.getElementById('money-value').textContent = moneySupply + '%';
-                updateSimulation();
-            });
-
-            demandSlider.addEventListener('input', (e) => {
-                demand = parseInt(e.target.value);
-                document.getElementById('demand-value').textContent = demand + '%';
-                updateSimulation();
-            });
-
-            productionSlider.addEventListener('input', (e) => {
-                production = parseInt(e.target.value);
-                document.getElementById('production-value').textContent = production + '%';
-                updateSimulation();
-            });
-
-            resetBtn.addEventListener('click', () => {
-                moneySupply = 100;
-                demand = 100;
-                production = 100;
-                
-                moneySlider.value = 100;
-                demandSlider.value = 100;
-                productionSlider.value = 100;
-                
-                document.getElementById('money-value').textContent = '100%';
-                document.getElementById('demand-value').textContent = '100%';
-                document.getElementById('production-value').textContent = '100%';
-                
-                updateSimulation();
-            });
-
-            updateSimulation();
-        });
-
-        if (window.elementSdk) {
-            window.elementSdk.init({
-                defaultConfig,
-                onConfigChange,
-                mapToCapabilities,
-                mapToEditPanelValues
-            });
+        // --- 5. Event Listeners ---
+        function handleInput(type, val) {
+            state[type] = parseInt(val);
+            updateUI();
         }
+
+        els.moneySlider.addEventListener('input', (e) => handleInput('money', e.target.value));
+        els.demandSlider.addEventListener('input', (e) => handleInput('demand', e.target.value));
+        els.prodSlider.addEventListener('input', (e) => handleInput('production', e.target.value));
+
+        // --- 6. Scenarios ---
+        function setScenario(type) {
+            let m=100, d=100, p=100;
+            switch(type) {
+                case 'eid': // High Demand
+                    m=110; d=150; p=100; 
+                    break;
+                case 'war': // Supply Shock
+                    m=100; d=110; p=60; 
+                    break;
+                case 'printing': // Too much money
+                    m=180; d=140; p=100; 
+                    break;
+                case 'bumper': // Good Production
+                    m=100; d=100; p=140; 
+                    break;
+            }
+            
+            // Animate sliders to new positions
+            els.moneySlider.value = m;
+            els.demandSlider.value = d;
+            els.prodSlider.value = p;
+            
+            state.money = m;
+            state.demand = d;
+            state.production = p;
+            
+            updateUI();
+        }
+
+        function resetSimulation() {
+            setScenario('default'); // Will default to 100,100,100
+            els.moneySlider.value = 100;
+            els.demandSlider.value = 100;
+            els.prodSlider.value = 100;
+            state.money = 100; state.demand = 100; state.production = 100;
+            updateUI();
+        }
+
+        // --- 7. Modals ---
+        const modalData = {
+            demandPull: {
+                title: "চাহিদাজনিত মুদ্রাস্ফীতি (Demand-Pull)",
+                content: "যখন অর্থনীতিতে পণ্য ও সেবার মোট চাহিদা, মোট উৎপাদনের চেয়ে বেশি হয়, তখন দাম বেড়ে যায়।<br><br><strong>উদাহরণ:</strong> ঈদের সময় সবার হাতে টাকা থাকে এবং কেনাকাটার ধুম পড়ে, কিন্তু পণ্যের জোগান সীমিত থাকলে দাম বেড়ে যায়।"
+            },
+            costPush: {
+                title: "ব্যয়জনিত মুদ্রাস্ফীতি (Cost-Push)",
+                content: "উৎপাদন খরচ (যেমন: তেলের দাম, শ্রমিকের মজুরি) বেড়ে গেলে কোম্পানিগুলো পণ্যের দাম বাড়িয়ে দেয়।<br><br><strong>উদাহরণ:</strong> আন্তর্জাতিক বাজারে তেলের দাম বাড়লে পরিবহন খরচ বাড়ে, ফলে সব পণ্যের দাম বাড়ে।"
+            },
+            moneySupply: {
+                title: "অর্থ সরবরাহ ও মুদ্রাস্ফীতি",
+                content: "যদি সরকার বা কেন্দ্রীয় ব্যাংক প্রয়োজনের অতিরিক্ত টাকা ছাপায়, তবে টাকার মান কমে যায় এবং জিনিসপত্রের দাম হু হু করে বাড়ে।<br><br><strong>উদাহরণ:</strong> জিম্বাবুয়েতে অতিরিক্ত নোট ছাপানোর ফলে ১টি ডিমের দাম কোটি ডলারে পৌঁছেছিল।"
+            }
+        };
+
+        function openModal(key) {
+            const data = modalData[key];
+            document.getElementById('modalTitle').innerText = data.title;
+            document.getElementById('modalContent').innerHTML = data.content;
+            document.getElementById('infoModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('infoModal').classList.remove('active');
+        }
+
+        // Init
+        updateUI();
+
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b5801bde6e2ba5f',t:'MTc2Njk5Nzc3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
